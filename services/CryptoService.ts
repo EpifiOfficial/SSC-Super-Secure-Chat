@@ -1,4 +1,5 @@
 import { SignalProtocol, UserBundle } from '@/lib/signal';
+import { supabase } from '@/services/supabase';
 
 export class CryptoService {
   private userId: string;
