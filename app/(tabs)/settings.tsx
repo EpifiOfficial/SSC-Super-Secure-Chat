@@ -118,7 +118,7 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>Security</Text>
 
         <TouchableOpacity
-          style={[styles.menuItem, initializing && styles.menuItemDisabled]}
+          style={[styles.menuItem, initializing ? styles.menuItemDisabled : null]}
           onPress={initializeEncryption}
           disabled={initializing}
           activeOpacity={0.7}
@@ -286,9 +286,6 @@ const styles = StyleSheet.create({
   },
   menuItemDisabled: {
     opacity: 0.5,
-  },
-  menuItemDisabled: {
-    color: '#c7c7cc',
   },
   menuItemLeft: {
     flexDirection: 'row',

@@ -1,4 +1,6 @@
 import * as SecureStoreModule from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
+import { Buffer } from 'buffer';
 import 'react-native-get-random-values';
 
 // Runtime fallback for Expo Go compatibility
@@ -110,6 +112,7 @@ class SignalStore {
     try {
       const data = record.serialize();
       await SecureStoreModule.setItemAsync(this.getKey(`signed_prekey_${signedPreKeyId}`), Buffer.from(data).toString('base64'));
+      await this.setCurrentSignedPreKeyId(signedPreKeyId);
     } catch (error) {
       console.error('Error saving signed prekey:', error);
       throw error;
@@ -131,8 +134,47 @@ class SignalStore {
     try {
       const data = record.serialize();
       await SecureStoreModule.setItemAsync(this.getKey(`prekey_${preKeyId}`), Buffer.from(data).toString('base64'));
+      await this.setCurrentPreKeyId(preKeyId);
     } catch (error) {
       console.error('Error saving prekey:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentSignedPreKeyId(): Promise<number | null> {
+    try {
+      const id = await SecureStoreModule.getItemAsync(this.getKey('signed_prekey_id'));
+      return id ? parseInt(id, 10) : null;
+    } catch (error) {
+      console.error('Error getting current signed prekey id:', error);
+      return null;
+    }
+  }
+
+  async setCurrentSignedPreKeyId(id: number): Promise<void> {
+    try {
+      await SecureStoreModule.setItemAsync(this.getKey('signed_prekey_id'), id.toString());
+    } catch (error) {
+      console.error('Error saving current signed prekey id:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentPreKeyId(): Promise<number | null> {
+    try {
+      const id = await SecureStoreModule.getItemAsync(this.getKey('prekey_id'));
+      return id ? parseInt(id, 10) : null;
+    } catch (error) {
+      console.error('Error getting current prekey id:', error);
+      return null;
+    }
+  }
+
+  async setCurrentPreKeyId(id: number): Promise<void> {
+    try {
+      await SecureStoreModule.setItemAsync(this.getKey('prekey_id'), id.toString());
+    } catch (error) {
+      console.error('Error saving current prekey id:', error);
       throw error;
     }
   }
@@ -264,7 +306,18 @@ export class SignalProtocol {
     // For demo purposes, we'll just ensure they're generated and stored
     await this.ensureSignalLoaded();
     const identityKeyPair = await this.store.getIdentityKeyPair();
-    if (!identityKeyPair) {
+    const signedPreKeyId = await this.store.getCurrentSignedPreKeyId();
+    const preKeyId = await this.store.getCurrentPreKeyId();
+
+    if (!identityKeyPair || !signedPreKeyId || !preKeyId) {
+      await this.generateIdentity();
+      return;
+    }
+
+    const signedPreKey = await this.store.getSignedPreKey(signedPreKeyId);
+    const preKey = await this.store.getPreKey(preKeyId);
+
+    if (!signedPreKey || !preKey) {
       await this.generateIdentity();
     }
   }
@@ -349,14 +402,14 @@ export class SignalProtocol {
       
       if (!identityKeyPair) return null;
 
-      // Get the first available signed prekey and prekey
-      // In a real app, you'd manage these more carefully
-      const signedPreKeyId = 1;
-      const preKeyId = 1;
-      
+      const signedPreKeyId = await this.store.getCurrentSignedPreKeyId();
+      const preKeyId = await this.store.getCurrentPreKeyId();
+
+      if (!signedPreKeyId || !preKeyId) return null;
+
       const signedPreKey = await this.store.getSignedPreKey(signedPreKeyId);
       const preKey = await this.store.getPreKey(preKeyId);
-      
+
       if (!signedPreKey || !preKey) return null;
 
       return {
@@ -389,10 +442,13 @@ export class SignalProtocol {
       
       // Create a simple hash of both keys for safety number
       const combined = Buffer.concat([ourKey, theirKey]);
-      const hash = require('crypto').createHash('sha256').update(combined).digest('hex');
-      
-      // Format as groups of 5 digits
-      return hash.substring(0, 60).match(/.{1,5}/g)?.join(' ') || hash.substring(0, 60);
+      const hash = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        combined.toString('base64')
+      );
+
+      const truncated = hash.substring(0, 60);
+      return truncated.match(/.{1,5}/g)?.join(' ') || truncated;
     } catch (error) {
       console.error('Error generating safety number:', error);
       return 'Error generating safety number';
