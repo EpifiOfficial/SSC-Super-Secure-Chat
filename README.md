@@ -1,12 +1,15 @@
 # SecureChat - Signal Protocol Implementation
 
 A React Native Expo app implementing end-to-end encryption using the official Signal protocol.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8b56c5b1-b6cb-4912-a44c-404b6c76a80a" alt="Super Secure Chat Screen" width="230" />
+  <img src="https://github.com/user-attachments/assets/70860c4a-f1d4-47ef-9acb-2f07b2856086" alt="Chats Screen" width="230" />
+  <img src="https://github.com/user-attachments/assets/fccfceec-68dd-4f11-b86a-5dceff1d5db1" alt="New Chat Screen" width="230" />
+  <img src="https://github.com/user-attachments/assets/9710837a-11aa-4d43-837f-34b07874ffbd" alt="Settings Screen" width="230" />
+</p>
 
-<img width="355" height="762" alt="super-secure-chat-screen" src="https://github.com/user-attachments/assets/8b56c5b1-b6cb-4912-a44c-404b6c76a80a" />
-<img width="355" height="762" alt="chats-screen" src="https://github.com/user-attachments/assets/70860c4a-f1d4-47ef-9acb-2f07b2856086" />
-<img width="355" height="763" alt="new-chat-screen" src="https://github.com/user-attachments/assets/fccfceec-68dd-4f11-b86a-5dceff1d5db1" />
-<img width="355" height="762" alt="settings-screen" src="https://github.com/user-attachments/assets/9710837a-11aa-4d43-837f-34b07874ffbd" />
-
+<p align="center">
+  <em>Home • Chats • New Chat • Settings</em>
 
 ## Features
 
