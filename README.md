@@ -2,6 +2,9 @@
 
 A React Native Expo app implementing end-to-end encryption using the official Signal protocol.
 
+<img width="1170" height="2532" alt="super-secure-chat-screen" src="https://github.com/user-attachments/assets/8b56c5b1-b6cb-4912-a44c-404b6c76a80a" />
+
+
 ## Features
 
 - **End-to-End Encryption**: Uses `@signalapp/libsignal-client` for the Signal protocol (X3DH + Double Ratchet)
