@@ -3,6 +3,7 @@
 A React Native Expo app implementing end-to-end encryption using the official Signal protocol.
 
 <img width="1170" height="2532" alt="super-secure-chat-screen" src="https://github.com/user-attachments/assets/8b56c5b1-b6cb-4912-a44c-404b6c76a80a" />
+<img width="355" height="762" alt="chats-screen" src="https://github.com/user-attachments/assets/70860c4a-f1d4-47ef-9acb-2f07b2856086" />
 
 
 ## Features
